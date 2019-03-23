@@ -1,0 +1,762 @@
+#
+# The following variables can be used in most messages that involve a punishment:
+#
+# Punishment specific variables
+# $id - The ID of the punishment in the database.
+# $type - Type of punishment - ban, mute, warn, kick.
+# $reason - the reason for the punishment
+# $executor - the moderator's name, or their display name (/nick) if this is enabled in the configuration
+# $executorUUID - the moderator's UUID
+# $permanent - whether this punishment is permanent
+# $ipban - whether this is an IP-ban
+# $silent - whether this punishment was executed silently (-s)
+# $active - whether this punishment is active
+#
+# Affected player specific variables
+# $playerDisplayName - player display name. If display names are not enabled in the configuration or if the player's display name is not available in the message's context, the player's regular name will be used instead.
+# $playerName - player name
+# $playerUUID - UUID of affected player
+# $playerIP - IP of affected player
+# $geoip - Country of affected player, requires GeoIP to be enabled in the configuration, won't work with imported bans
+#
+# Servers
+# These variables represent a server.
+# If the plugin is installed on Spigot, a server is represented by the "server_name" option in config.yml.
+# If the plugin is installed on BungeeCord, a server is represented by their name in the "servers" section in the proxy's config.yml.
+# $serverScope - the scope of the punishment (the server(s) it will affect)
+# $serverOrigin - the origin of the punishment (the server/subserver it was placed on)
+#
+# Dates
+# Example format: "2017-02-03", depends on time_format
+# $dateStart - date the punishment was placed
+# $dateEnd - date the punishment will expire, "forever" if permanent
+#
+# Durations
+# Example format: "20 days, 5 hours, 2 minutes". If permanent, "forever", if expired, "expired" (both are configurable).
+# $duration - time until expiry
+# $originalDuration - the full duration of the punishment.
+# $timeSince - time since placement
+#
+# Placeholders
+# These variables represent messages in this configuration (messages.yml)
+# $base - banned_message_base
+# $appealMessage - banned_message_appeal_message
+#
+# Global variables
+# $activeBans, $activeMutes, $activeWarnings - total number of global active punishments
+# $totalBans, $totalMutes, $totalWarnings - total number of global punishments (including inactive ones)
+#
+# Any message can be disabled by setting it to "". Empty messages will not be sent by the plugin.
+#
+# JSON examples:
+# message: 'Test message {hoverText: Hover text here!}'
+# Hover text requires "litebans.json.hover_text" to view, players without this permission will see messages without hover text.
+#
+# https://docs.oracle.com/javase/tutorial/i18n/format/simpleDateFormat.html
+# Example time format with hours + minutes:
+# time_format: 'dd/MM/yyyy HH:mm'
+time_format: YYYY-MM-dd
+history_time_format: YYYY-MM-dd
+banned_message_base: |-
+  &r
+  &8&m+-----------&r&8[&4&lBanned&8]&m-----------+
+
+  &8&l» &7&lPlayer: &e$playerName
+  &8&l» &7&lStaff Member: &e$executor
+  &8&l» &7&lBanned On: &e$dateStart
+  &8&l» &7&lReason: &e$reason&f
+banned_message: |-
+  $base
+  &8&l» &7&lExpires in:&e $duration
+  &8&l» &7&lIP-Ban: &e$ipban
+
+  $appealMessage
+  &8&m+------------------------------+
+banned_message_permanent: |-
+  $base
+  &8&l» &e&lYou are permanently banned!
+  &8&l» IP-Ban: &f$ipban
+
+  $appealMessage
+  &8&m+------------------------------+
+banned_message_appeal_message: '&8&l» &c&lYou May Not Appeal This Ban! &8&l«'
+banned_message_geoip_blacklist: |-
+  &8&m+----------------&r&8[&4&lBanned&8]&m----------------+
+
+  &8&l» &7&lReason: &fYour IP is BlackListed!
+  &8&l» &7&lUnfairly Banned?&b&l&n https://discord.gg/M3nqK9e
+
+  &8&m+----------------------------------------+
+default_ban_reason: Stop
+default_mute_reason: Stop
+permission_error: |-
+  &r
+  &c▉▉▉▉▉▉▉▉
+  &c▉▉▉&f▉▉&c▉▉▉                   &f&l<&c&l!&f&l> &c&lError 403 &f&l<&c&l!&f&l>
+  &c▉▉▉&f▉▉&c▉▉▉
+  &c▉▉▉&f▉▉&c▉▉▉   &c&l(!) &cYou do not have access to that command!
+  &c▉▉▉&f▉▉&c▉▉▉  &7&o(( You need to be staff to use this command! ))
+  &c▉▉▉▉▉▉▉▉
+  &c▉▉▉&f▉▉&c▉▉▉         &eCopyright © 2019 &f&nCowCraft.co
+  &c▉▉▉▉▉▉▉▉
+  &r
+muted: |-
+  &r
+  &e▉▉▉▉▉▉▉▉ &f&l<&c&l!&f&l> &c&lYou have been muted! &f&l<&c&l!&f&l>
+  &e▉▉&0▉&e▉▉&0▉&e▉▉
+  &e▉▉&0▉&e▉▉&0▉&e▉▉ &6* &eMuted By &7$executor
+  &e▉▉▉▉▉▉▉▉ &6* &eMuted On &7$dateStart
+  &e▉▉&0▉▉▉▉&e▉▉ &6* &eReason &7$reason
+  &e▉&0▉&e▉▉▉▉&0▉&e▉ &6* &eEndate &7$dateend &8(&a$duration&8)
+  &e▉&0▉&e▉▉▉▉&0▉&e▉
+  &e▉▉▉▉▉▉▉▉ &7&o(( Appeal this mute @ &f&ohttps://discord.gg/tarwtwq&7&o! ))
+  &r
+muted_permanent: |-
+  &r
+  &e▉▉▉▉▉▉▉▉ &f&l<&c&l!&f&l> &c&lYou have been muted! &f&l<&c&l!&f&l>
+  &e▉▉&0▉&e▉▉&0▉&e▉▉
+  &e▉▉&0▉&e▉▉&0▉&e▉▉ &6* &eMuted By &7$executor
+  &e▉▉▉▉▉▉▉▉ &6* &eMuted On &7$dateStart
+  &e▉▉&0▉▉▉▉&e▉▉ &6* &eReason &7$reason
+  &e▉&0▉&e▉▉▉▉&0▉&e▉ &6* &eEndate &7Never &8(&aNever&8)
+  &e▉&0▉&e▉▉▉▉&0▉&e▉
+  &e▉▉▉▉▉▉▉▉ &7&o(( Appeal this mute @ &f&ohttps://discord.gg/tarwtwq&7&o! ))
+banned_player_join: |-
+  &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+  &8&l» &7&l$player Has Tried To Join But Is Banned!
+  &8&m+---------------------------------------+
+banned_geoip_blacklist: |-
+  &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+  &8&l» &7&l$player Has Tried To Join But Their IP Is Blacklisted!
+  &8&m+---------------------------------------+
+error_no_reason_provided: |-
+  &8&m+----------------&r&8[&c&lError&8]&m----------------+
+  &8&l» &7&lNo Reason Provided!
+  &8&m+---------------------------------------+
+error_no_sql_connection: |-
+  &8&m+----------------&r&8[&c&lError&8]&m----------------+
+  &8&l» &7&lLiteBans Is Not Connected To a Database!
+  &8&m+---------------------------------------+
+internal_error: |-
+  &8&m+----------------&r&8[&c&lError&8]&m----------------+
+  &8&l» &7&lAn Internal Error Has Occurred!
+  &8&m+---------------------------------------+
+duration_limit_error: |-
+  &8&m+----------------&r&8[&c&lError&8]&m----------------+
+  &8&l» &7&lDuration Exceeds Maximum Duration!
+  &8&m+---------------------------------------+
+warned_join: |-
+  &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+  &8&l» &7&lYou Have New Warnings!
+  &8&m+---------------------------------------+
+warned_join_entry: |-
+  &8&l» &b$executor&7 Warned You For &e$reason
+  &8&l» &e$timeSince &7ago
+  &8&m+--------------------------------+
+command:
+  ban:
+    usage: |-
+      &8&m+------------------&r&8[&4&lBan&8]&m------------------+
+      &8&l» &7&lUsage: &f/ban &8{&f-s&8} &8<&fplayer&8> (&ftime&8) [&freason&8]
+      &8&l» &7&lExample: &f/ban -s &cCowz_ &f14d ''&fHacking - KillAura [O1]''
+      &8&m+-------------------------------------------+
+    unban_usage: |-
+      &8&m+----------&r&8[&2&lUn-Ban&8]&m----------+
+      &8&l» &7&lUsage: &f/unban &8<&fplayer&8>
+      &8&l» &7&lExample: &f/unban &2Cowz_
+      &8&m+----------------------------+
+    example: ''
+    silent_prefix: ''
+    broadcast_ban: |-
+      &8&m+------&r&8[&4&lBanned&8]&m------+
+      &8&l» &7&lPlayer: &e$bannedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lDuration: &ePermanate
+      &8&l» &7&lReason: &e$reason
+      &8&m+--------------------+
+    broadcast_tempban: |-
+      &8&m+------&r&8[&4&lBanned&8]&m------+
+      &8&l» &7&lPlayer: &e$bannedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lDuration: &e$tempDuration
+      &8&l» &7&lReason: &e$reason
+      &8&m+--------------------+
+    broadcast_ip_ban: |-
+      &8&m+------&r&8[&4&lBanned&8]&m------+
+      &8&l» &7&lPlayer: &e$bannedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lDuration: &ePermanate
+      &8&l» &7&lReason: &e$reason
+      &8&m+--------------------+
+    broadcast_temp_ip_ban: |-
+      &8&m+------&r&8[&4&lBanned&8]&m------+
+      &8&l» &7&lPlayer: &e$bannedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lDuration: &e$tempDuration
+      &8&l» &7&lReason: &e$reason
+      &8&m+--------------------+
+    broadcast_ip_ban_hidden: |-
+      &8&m+------&r&8[&4&lBanned&8]&m------+
+      &8&l» &7&lPlayer: &e$bannedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lDuration: &e$tempDuration
+      &8&l» &7&lReason: &e$reason
+      &8&m+--------------------+
+    broadcast_unban: |-
+      &8&m+-----&r&8[&a&lUn-Banned&8]&m-----+
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lPlayer: &e$bannedPlayer
+      &8&m+---------------------+
+    previous_ban_removed: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lPrevious Ban For $bannedPlayer Was Removed
+      &8&m+---------------------------------------+
+    previous_ban_existing: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&l$bannedPlayer Is Already Banned!
+      &8&m+---------------------------------------+
+    unban_queue: ''
+    error_no_spec: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lNo Valid Time Specification Detected!
+      &8&m+---------------------------------------+
+    unban_fail: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Is Not Banned!
+      &8&m+---------------------------------------+
+    exempt: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Is Exempt!
+      &8&m+---------------------------------------+
+    broadcast_unmute: |-
+      &8&m+------&r&8[&6&lUn-Mute&8]&m------+
+      &8&l» &7&lPlayer: &e$bannedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&m+---------------------+
+    no_override: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Is Already Banned!
+      &8&m+---------------------------------------+
+    response: ''
+    cooldown: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lPlease Wait $seconds Seconds Before Executing This Command!
+      &8&m+---------------------------------------+
+  mute:
+    usage: |-
+      &8&m+----------------&r&8[&6&lMute&8]&m----------------+
+      &8&l» &7&lUsage: &f/mute &8<&fplayer&8> (&ftime&8) [&freason&8]
+      &8&l» &7&lExample: &f/mute &eCowz_ &f1h &cSpamming [O1]
+      &8&m+--------------------------------------+
+    unmute_usage: |-
+      &8&m+---------&r&8[&6&lUn-Mute&8]&m---------+
+      &8&l» &7&lUsage: &f/unmute &8<&fplayer&8>
+      &8&l» &7&lExample: &f/unmute &eCowz_
+      &8&m+---------------------------+
+    example: ''
+    broadcast: |-
+      &8&m+------&r&8[&6&lMute&8]&m------+
+      &8&l» &7&lPlayer: &e$mutedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lDuration: &ePermanate
+      &8&l» &7&lReason: &e$reason
+      &8&m+------------------+
+    broadcast_tempmute: |-
+      &8&m+------&r&8[&6&lMute&8]&m------+
+      &8&l» &7&lPlayer: &e$mutedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lDuration: &e$tempDuration
+      &8&l» &7&lReason: &e$reason
+      &8&m+------------------+
+    message: |-
+      &r
+      &c▉▉▉▉▉▉▉▉ &f&l<&c&l!&f&l> &c&lYou have been muted! &f&l<&c&l!&f&l>
+      &c▉▉▉&f▉▉&c▉▉▉
+      &c▉▉▉&f▉▉&c▉▉▉ &6* &eMuted By &7$executor
+      &c▉▉▉&f▉▉&c▉▉▉ &6* &eMuted On &7$dateStart
+      &c▉▉▉&f▉▉&c▉▉▉ &6* &eReason &7$reason
+      &c▉▉▉▉▉▉▉▉ &6* &eEndDate &7$endDate &8(&a$duration&8)
+      &c▉▉▉&f▉▉&c▉▉▉
+      &c▉▉▉▉▉▉▉▉ &7&o(( Appeal this mute @ &f&ohttps://discord.gg/tarwtwq&7&o! ))
+      &r
+    message_permanent: |-
+      &r
+      &c▉▉▉▉▉▉▉▉ &f&l<&c&l!&f&l> &c&lYou have been muted! &f&l<&c&l!&f&l>
+      &c▉▉▉&f▉▉&c▉▉▉
+      &c▉▉▉&f▉▉&c▉▉▉ &6* &eMuted By &7$executor
+      &c▉▉▉&f▉▉&c▉▉▉ &6* &eMuted On &7$dateStart
+      &c▉▉▉&f▉▉&c▉▉▉ &6* &eReason &7$reason
+      &c▉▉▉▉▉▉▉▉ &6* &eEndDate &7$Never &8(&aNever&8)
+      &c▉▉▉&f▉▉&c▉▉▉
+      &c▉▉▉▉▉▉▉▉ &7&o(( Appeal this mute @ &f&ohttps://discord.gg/tarwtwq&7&o! ))
+      &r
+    unmute_fail: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Is Not Muted!
+      &8&m+---------------------------------------+
+    previous_mute_removed: |-
+      &8&m+----------------&r&8[&a&lInfo&8]&m----------------+
+      &8&l» &7&lPrevious Mute Removed For $mutedPlayer!
+      &8&m+---------------------------------------+
+    previous_mute_existing: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lPlayer Already Muted!
+      &8&m+---------------------------------------+
+    exempt: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Is Exempt!
+      &8&m+---------------------------------------+
+    notification: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&l$player Tried To Chat But Is Muted!
+      &8&m+---------------------------------------+
+    error_not_enabled: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lMuting Is Not Enabled!
+      &8&m+---------------------------------------+
+    broadcast_ip_mute: |-
+      &8&m+------&r&8[&6&lMute&8]&m------+
+      &8&l» &7&lPlayer: &e$mutedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lDuration: &e$tempDuration
+      &8&l» &7&lReason: &e$reason
+      &8&m+------------------+
+    broadcast_temp_ip_mute: |-
+      &8&m+------&r&8[&6&lMute&8]&m------+
+      &8&l» &7&lPlayer: &e$mutedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lDuration: &e$tempDuration
+      &8&l» &7&lReason: &e$reason
+      &8&m+------------------+
+    no_override: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Is Already Muted
+      &8&m+---------------------------------------+
+    response: ''
+    broadcast_unmute: |-
+      &8&m+------&r&8[&6&lUn-Mute&8]&m------+
+      &8&l» &7&lPlayer: &e$bannedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&m+---------------------+
+  warn:
+    usage: |-
+      &8&m+-------------&r&8[&5&lWarn&8]&m-------------+
+      &8&l» &7&lUsage: &f/warn &8<&fplayer&8> [&freason&8]
+      &8&l» &7&lExample: &f/warn &dCowz_ &eKit Mixing
+      &8&m+-------------------------------+
+    unwarn_usage: |-
+      &8&m+---------&r&8[&5&lUn-Warn&8]&m---------+
+      &8&l» &7&lUsage: &f/unwarn &8<&fplayer&8>
+      &8&l» &7&lExample: &f/unwarn &dCowz_
+      &8&m+---------------------------+
+    example: ''
+    broadcast: |-
+      &8&m+------&r&8[&5&lWarn&8]&m------+
+      &8&l» &7&lPlayer: &e$warnedPlayer
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lReason: &e$reason
+      &8&m+------------------+
+    message: |-
+      &r
+      &c▉▉▉▉▉▉▉▉ &f&l<&c&l!&f&l> &c&lYou have been warned! &f&l<&c&l!&f&l>
+      &c▉▉▉&f▉▉&c▉▉▉
+      &c▉▉▉&f▉▉&c▉▉▉ &6* &eWarned By &7$executor
+      &c▉▉▉&f▉▉&c▉▉▉ &6* &eWarned On &7$dateStart
+      &c▉▉▉&f▉▉&c▉▉▉ &6* &eReason &7$reason
+      &c▉▉▉▉▉▉▉▉ &6* &eCloud Origin &7$serverOrgin
+      &c▉▉▉&f▉▉&c▉▉▉
+      &c▉▉▉▉▉▉▉▉ &7&o(( This warning will expire in &f&o$duration&7&o! ))
+      &r
+    list_entry: ' \- Warned by $executor: $reason&f'
+    unwarn_response: ''
+    unwarn_fail: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Has No Warnings!
+      &8&m+---------------------------------------+
+    exempt: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Is Exempt
+      &8&m+---------------------------------------+
+    cooldown: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lYou Are On Cooldown
+      &8&m+---------------------------------------+
+    response: ''
+  history:
+    usage: |-
+      &8&m+------------&r&8[&f&lHistory&8]&m-----------+
+      &8&l» &7&lUsage: &f/history &8<&fplayer&8> [&famount&8]
+      &8&l» &7&lExample: &f/history &fCowz_ &f2
+      &8&m+-------------------------------+
+    start: '&8&m+------------&r&8[&f&lHistory&8]&m-----------+'
+    ban_entry: |-
+      &8&l» &c$name &7was banned for &f'$reason'
+      &8&l» &7$timeSince &7ago
+      &8&m+--------------------------------+
+    mute_entry: |-
+      &8&l» &6$name &7was muted for &f'$reason'
+      &8&l» &7$timeSince &7ago
+      &8&m+--------------------------------+
+    warn_entry: |-
+      &8&l» &5$name &7was warned for &f'$reason'
+      &8&l» &7$timeSince &7ago
+      &8&m+--------------------------------+
+    kick_entry: |-
+      &8&l» &9$name &7was kicked for &f'$reason'
+      &8&l» &7$timeSince &7ago
+      &8&m+--------------------------------+
+    active_suffix: ''
+    active_suffix_temp: ''
+    error_no_history: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &c&lNo History Found!
+      &8&m+---------------------------------------+
+    unban_entry: |2-
+
+       &f$name was &7unbanned &fby $executor.
+    unmute_entry: |2-
+
+       &f$name was &7unmuted &fby $executor.
+    expired_suffix: '&f [&8Expired&f]'
+  warnings:
+    usage: |-
+      &8&m+-------------&r&8[&5&lWarnings&8]&m-------------+
+      &8&l» &7&lUsage: &f/warnings &8<&fplayer&8>
+      &8&l» &7&lExample: &f/warnings &dCowz_
+      &8&m+-------------------------------+
+    start: '&aActive warnings for $target:'
+  prunehistory:
+    usage: |-
+      &8&m+-------------&r&8[&5&lPrunehistory&8]&m-------------+
+      &8&l» &7&lUsage: &f/prunehistory &8<&fplayer&8> [&fduration&8]
+      &8&l» &7&lExample: &f/prunehistory &aCowz_
+      &8&m+-------------------------------+
+    message: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lHistory Pruned
+      &8&m+---------------------------------------+
+  staffhistory:
+    usage: |-
+      &8&m+----------&r&8[&5&lStaffhistory&8]&m----------+
+      &8&l» &7&lUsage: &f/staffhistory &8<&fplayer&8> [&fentries=10&8]
+      &8&l» &7&lExample: &f/staffhistory &dCowz_
+      &8&m+-------------------------------+
+    start: '&aStaff history for $target (Limit: $limit):'
+  staffrollback:
+    usage: |-
+      &8&m+----------&r&8[&5&lStaffrollback&8]&m----------+
+      &8&l» &7&lUsage: &f/staffrollback &8<&fplayer&8>
+      &8&l» &7&lExample: &f/staffrollback &dCowz_
+      &8&m+-------------------------------+
+    message: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lRollback Completed Successfully
+      &8&m+---------------------------------------+
+  banlist:
+    start: '&8&m+--------&r&8[&4BanList &7Page &e$page&8/&7$total&8]&m--------+'
+  iphistory:
+    usage: ''
+    start: '&aLogin history for $target (Limit: $limit):'
+    entry: '&a - [&f$date&a]&f $name&a:&f $ip'
+    error_no_history: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lNo History Found
+      &8&m+---------------------------------------+
+  dupeip:
+    usage: |-
+      &8&m+---------&r&8[&3&lDupeIP&8]&m---------+
+      &8&l» &7&lUsage: &f/dupeip &8<&fplayer&8>
+      &8&l» &7&lExample: &f/dupeip &3TheHumax
+      &8&m+---------------------------+
+    start: |-
+      &8&m+-----------&r&8[&3&lDupeIP&8]&m-----------+
+      &8&l» &7&lUser: &f$name
+      &8&l» &7&lIP: &f$ip
+      &8&l» &7&lStatus: &f[&aOnline&f] [&7Offline&f] [&cBanned&f]
+      &8&m+------------------------------+
+      &7&lAccounts
+    separator: '&f, '
+    online: '&a'
+    offline: '&7'
+    banned: '&c'
+    multiple_addresses: '[$num addresses] [$ip]'
+    start_no_ip: '&fScanning &7$name&f. &f[&aOnline&f] [&7Offline&f] [&cBanned&f]'
+    muted: '&6'
+  ipreport:
+    start: |-
+      &8&m+-----------------&r&8[&3&lIP-Report&8]&m------------------+
+      &8&l» &7&lUser: &f$name
+    entry: |-
+      &8&l» &7&lIP: &f$ip
+      &8&l» &7&lStatus: &f[&aOnline&f] [&7Offline&f] [&cBanned&f]
+      &8&m+-------------------------------------------+
+  checkban:
+    usage: |-
+      &8&m+-------------&r&8[&5&lCheckban&8]&m-------------+
+      &8&l» &7&lUsage: &f/checkban &8<&fplayer&8>
+      &8&l» &7&lExample: &f/checkban &dCowz_
+      &8&m+-------------------------------+
+    no_ban: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Is Not Banned!
+      &8&m+---------------------------------------+
+    banned: |-
+      &8&m+------&r&8[&6&l$target's Ban&8]&m------+
+      &8&l» &7&lStaff: &f$executor
+      &8&l» &7&lStartDate: &f$dateStart
+      &8&l» &7&lEndDate: &f$dateEnd (&a$duration&f)
+      &8&l» &7&lReason: &f''&f$reason''
+      &8&l» &7&lSilent: &f$silent
+      &8&l» &7&lIP-Mute: &f$ipban
+      &8&m+----------------------------+
+  lastuuid:
+    usage: |-
+      &8&m+-------------&r&8[&5&lLastUUID&8]&m-------------+
+      &8&l» &7&lUsage: &f/lastuuid &8<&fPLayer|IP&8>
+      &8&l» &7&lExample: &f/lastuuid &dCowz_
+      &8&m+-------------------------------+
+    message: '&fLast UUID for &a$name&f: &a$uuid'
+  geoip:
+    usage: |-
+      &8&m+-------------&r&8[&5&lGeoIP&8]&m-------------+
+      &8&l» &7&lUsage: &f/geoip &8<&fPlayer|IP&8>
+      &8&l» &7&lExample: &f/geoip &dCowz_
+      &8&m+-------------------------------+
+    message: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &c&l$target&7&l is from &e&l$result
+      &8&m+---------------------------------------+
+    error_disabled: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lGeoIP is not enabled!
+      &8&m+---------------------------------------+
+    error_unavailable: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lGeoIP Unavailable
+      &8&m+---------------------------------------+
+    error_not_found: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Not Found
+      &8&m+---------------------------------------+
+  lockdown:
+    usage: |-
+      &8&m+-------------&r&8[&1&lLockdown&8]&m-------------+
+      &8&l» &7&lUsage: &f/lockdown &8<&fReason&8>
+      &8&l» &7&lExample: &f/lockdown &9Bots
+      &8&m+-------------------------------+
+    message: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &c&lServer Lockdown Active! &8(&e$reason&8)
+      &8&m+---------------------------------------+
+    stopped: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lLockdown Has Ended!
+      &8&m+---------------------------------------+
+    kick_message: |-
+      &c&l(!) &cCloud lockdown active!
+      &r
+      &6* &eReason &7$reason
+      &r
+      &7&o(( Try to connect again later! ))
+    error_not_active: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lLock Down Not Active
+      &8&m+---------------------------------------+
+    kick_message_global: |-
+      &c&l(!) &cNetwork lockdown active!
+      &r
+      &6* &eReason &7$reason
+      &r
+      &7&o(( Try to connect again later! ))
+  kick:
+    usage: |-
+      &8&m+-------------&r&8[&9&lKick&8]&m-------------+
+      &8&l» &7&lUsage: &f/kick &8<&fplayer&8> [&freason&8]
+      &8&l» &7&lExample: &f/kick &bCowz_ &f''Greifing''
+      &8&m+-------------------------------+
+    no_match: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lPlayer Not Found
+      &8&m+---------------------------------------+
+    message: |-
+      &8&m+------&r&8[&9&lKicked&8]&m------+
+      &8&l» &7&lStaff: &f&o$executor
+      &8&l» &7&lReason: &f''&f$reason''
+      &8&m+--------------------+
+    message_no_reason: |-
+      &8&m+------&r&8[&9&lKicked&8]&m------+
+      &8&l» &7&lStaff: &e$executor
+      &8&m+--------------------+
+    response: ''
+    broadcast: |-
+      &8&m+------&r&8[&9&lKicked&8]&m------+
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lPlayer: &e$player
+      &8&l» &7&lReason: &e$reason
+      &8&m+--------------------+
+    broadcast_no_reason: |-
+      &8&m+------&r&8[&9&lKicked&8]&m------+
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lPlayer: &e$player
+      &8&m+--------------------+
+    exempt: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &c&lTarget Is Exempt!
+      &8&m+---------------------------------------+
+    kick_requested: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lCross-Server Kick Requested!
+      &8&m+---------------------------------------+
+  togglechat:
+    toggle_off: |-
+      &r           &6&l*&e&l*&6&l* &4&l&nGLOBAL CHAT WAS TOGGLED OFF&r &6&l*&e&l*&6&l*
+      &r
+    toggle_on: |-
+      &r           &6&l*&e&l*&6&l* &2&l&nGLOBAL CHAT WAS TOGGLED ON&r &6&l*&e&l*&6&l*
+      &r
+  clearchat:
+    broadcast: |-
+      &r           &6&l*&e&l*&6&l* &e&l&nGLOBAL CHAT HAS BEEN CLEARED&r &6&l*&e&l*&6&l*
+      &r
+  mutechat:
+    response: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lGlobal Chat Has Been Disabled! &e&l>;(
+      &8&m+---------------------------------------+
+    broadcast_disabled: |-
+      &r           &6&l*&e&l*&6&l* &c&l&nGLOBAL CHAT HAS BEEN MUTED&r &6&l*&e&l*&6&l*
+      &r
+    broadcast_enabled: |-
+      &r           &6&l*&e&l*&6&l* &a&l&nGLOBAL CHAT HAS BEEN UNMUTED&r &6&l*&e&l*&6&l*
+      &r
+  litebans:
+    reload_success: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lLitebans Reloaded Successfully
+      &8&m+---------------------------------------+
+    reload_fail_connect: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lFailed To Connect To Database!
+      &8&m+---------------------------------------+
+    add_history_usage: |-
+      &8&m+-------------&r&8[&f&lAddHistory&8]&m-------------+
+      &8&l» &7&lUsage: &f/litebans addhistory &8<&fname&8> <UUID> <IP>
+      &8&l» &7&lExample: &f/litebans addhistory &bCowz_ &31032345 &e127.0.0.1
+      &8&m+-------------------------------+
+    add_history: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lHistory Added!
+      &8&m+---------------------------------------+
+    fix_history: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lFixing History for table $table
+      &8&m+---------------------------------------+
+    fix_history_result: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lAdded $amount Entries!
+      &8&m+---------------------------------------+
+    import_usage: |-
+      &8&m+-------------&r&8[&3&lImport&8]&m-------------+
+      &8&l» &7&lUsage: &f/litebans import start
+      &8&m+-------------------------------+
+    import_start: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lImporting From $db...
+      &8&m+---------------------------------------+
+    import_finish: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lImport Finshed Successfully!
+      &8&m+---------------------------------------+
+    import_finish_litebans: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lImport Finished Successfully!
+      &8&m+---------------------------------------+
+    import_fail: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lImport Failed! Check Console.
+      &8&m+---------------------------------------+
+    import_unsupported: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lImporting From $name Is Not Supported!
+      &8&m+---------------------------------------+
+    sqlexec_success: |-
+      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&l» &7&lSqlexec Successful!
+      &8&m+---------------------------------------+
+    sqlexec_failure: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lFailed To Execute!
+      &8&m+---------------------------------------+
+    reload_fail: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lReload Failed!
+      &8&m+---------------------------------------+
+    reload_fail_config: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lconfig.yml File Invalid!
+      &8&m+---------------------------------------+
+    reload_fail_messages: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lmessages.yml File Invalid!
+      &8&m+---------------------------------------+
+    fix_history_offline_uuids: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&l$amount UUIDs Not Fetched (Offline Mode)
+      &8&m+---------------------------------------+
+  checkmute:
+    usage: |-
+      &8&m+-------------&r&8[&6&lCheck&8&l-&6&lMute&8]&m-------------+
+      &8&l» &7&lUsage: &f/checkmute &8<&fplayer&8>
+      &8&l» &7&lExample: &f/checkmute &bCowz_
+      &8&m+-------------------------------+
+    no_mute: |-
+      &8&m+----------------&r&8[&c&lError&8]&m----------------+
+      &8&l» &7&lTarget Isn't Muted!
+      &8&m+---------------------------------------+
+    muted: |-
+      &8&m+------&r&8[&6&l$target's Mute&8]&m------+
+      &8&l» &7&lStaff: &e$executor
+      &8&l» &7&lStartDate: &e$dateStart
+      &8&l» &7&lEndDate: &e$dateEnd &7(&e$duration&7)
+      &8&l» &7&lReason: &e$reason
+      &8&l» &7&lIP-Mute: &e$ipban
+      &8&m+----------------------------+
+newline_as_new_message: true
+duration:
+  forever: Permanate
+  year: Year
+  years: Years
+  month: Month
+  months: Months
+  week: Week
+  weeks: Weeks
+  day: Day
+  days: Days
+  hour: Hour
+  hours: Hours
+  minute: Minute
+  minutes: Minutes
+  second: Second
+  seconds: Seconds
+  expired: Expired
+bungee_switch_banned: |-
+  &cYou are banned on $serverScope! Reason:
+  $reason
+error_no_uuid_found: |-
+  &8&m+----------------&r&8[&c&lError&8]&m----------------+
+  &8&l» &7&lUUID Not Found!
+  &8&m+---------------------------------------+
+strings:
+  global: Global
+  'null': N/A
+  'true': 'True'
+  'false': 'False'
+notify:
+  banned_player_join: |-
+    &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+    &8&l» &c&l$player Tried To Join But Is Banned!
+    &8&m+---------------------------------------+
+  banned_geoip_blacklist: |-
+    &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+    &8&l» &7&l$player Tried To Join From A Blacklisted IP!
+    &8&m+---------------------------------------+
