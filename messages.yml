@@ -74,7 +74,8 @@ banned_message: |-
   &8&m+------------------------------+
 banned_message_permanent: |-
   $base
-  &8&l» &e&lYou are permanently banned!
+  
+  &8&l» &6&lYou are permanently banned!
   &8&l» IP-Ban: &f$ipban
 
   $appealMessage
