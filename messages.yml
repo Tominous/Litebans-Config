@@ -54,7 +54,7 @@
 #
 # https://docs.oracle.com/javase/tutorial/i18n/format/simpleDateFormat.html
 # Example time format with hours + minutes:
-# time_format: 'dd/MM/yyyy HH:mm'
+# time_format: 'dd/MM/yyyy HH:mm:ss'
 time_format: YYYY-MM-dd
 history_time_format: YYYY-MM-dd
 banned_message_base: |-
@@ -123,11 +123,11 @@ muted_permanent: |-
   &e▉&0▉&e▉▉▉▉&0▉&e▉
   &e▉▉▉▉▉▉▉▉ &7&o(( Appeal this mute @ &f&ohttps://discord.gg/tarwtwq&7&o! ))
 banned_player_join: |-
-  &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+  &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
   &8&l» &7&l$player Has Tried To Join But Is Banned!
   &8&m+---------------------------------------+
 banned_geoip_blacklist: |-
-  &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+  &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
   &8&l» &7&l$player Has Tried To Join But Their IP Is Blacklisted!
   &8&m+---------------------------------------+
 error_no_reason_provided: |-
@@ -147,7 +147,7 @@ duration_limit_error: |-
   &8&l» &7&lDuration Exceeds Maximum Duration!
   &8&m+---------------------------------------+
 warned_join: |-
-  &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+  &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
   &8&l» &7&lYou Have New Warnings!
   &8&m+---------------------------------------+
 warned_join_entry: |-
@@ -209,7 +209,7 @@ command:
       &8&l» &7&lPlayer: &e$bannedPlayer
       &8&m+---------------------+
     previous_ban_removed: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lPrevious Ban For $bannedPlayer Was Removed
       &8&m+---------------------------------------+
     previous_ban_existing: |-
@@ -296,7 +296,7 @@ command:
       &8&l» &7&lTarget Is Not Muted!
       &8&m+---------------------------------------+
     previous_mute_removed: |-
-      &8&m+----------------&r&8[&a&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&a&lInformation&8]&m----------------+
       &8&l» &7&lPrevious Mute Removed For $mutedPlayer!
       &8&m+---------------------------------------+
     previous_mute_existing: |-
@@ -308,7 +308,7 @@ command:
       &8&l» &7&lTarget Is Exempt!
       &8&m+---------------------------------------+
     notification: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&l$player Tried To Chat But Is Muted!
       &8&m+---------------------------------------+
     error_not_enabled: |-
@@ -433,7 +433,7 @@ command:
       &8&l» &7&lExample: &f/prunehistory &aCowz_
       &8&m+-------------------------------+
     message: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lHistory Pruned
       &8&m+---------------------------------------+
   staffhistory:
@@ -450,7 +450,7 @@ command:
       &8&l» &7&lExample: &f/staffrollback &dCowz_
       &8&m+-------------------------------+
     message: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lRollback Completed Successfully
       &8&m+---------------------------------------+
   banlist:
@@ -524,7 +524,7 @@ command:
       &8&l» &7&lExample: &f/geoip &dCowz_
       &8&m+-------------------------------+
     message: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &c&l$target&7&l is from &e&l$result
       &8&m+---------------------------------------+
     error_disabled: |-
@@ -546,11 +546,11 @@ command:
       &8&l» &7&lExample: &f/lockdown &9Bots
       &8&m+-------------------------------+
     message: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &c&lServer Lockdown Active! &8(&e$reason&8)
       &8&m+---------------------------------------+
     stopped: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lLockdown Has Ended!
       &8&m+---------------------------------------+
     kick_message: |-
@@ -605,7 +605,7 @@ command:
       &8&l» &c&lTarget Is Exempt!
       &8&m+---------------------------------------+
     kick_requested: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lCross-Server Kick Requested!
       &8&m+---------------------------------------+
   togglechat:
@@ -621,7 +621,7 @@ command:
       &r
   mutechat:
     response: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInfomartion&8]&m----------------+
       &8&l» &7&lGlobal Chat Has Been Disabled! &e&l>;(
       &8&m+---------------------------------------+
     broadcast_disabled: |-
@@ -632,7 +632,7 @@ command:
       &r
   litebans:
     reload_success: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lLitebans Reloaded Successfully
       &8&m+---------------------------------------+
     reload_fail_connect: |-
@@ -645,15 +645,15 @@ command:
       &8&l» &7&lExample: &f/litebans addhistory &bCowz_ &31032345 &e127.0.0.1
       &8&m+-------------------------------+
     add_history: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lHistory Added!
       &8&m+---------------------------------------+
     fix_history: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lFixing History for table $table
       &8&m+---------------------------------------+
     fix_history_result: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lAdded $amount Entries!
       &8&m+---------------------------------------+
     import_usage: |-
@@ -661,15 +661,15 @@ command:
       &8&l» &7&lUsage: &f/litebans import start
       &8&m+-------------------------------+
     import_start: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lImporting From $db...
       &8&m+---------------------------------------+
     import_finish: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lImport Finshed Successfully!
       &8&m+---------------------------------------+
     import_finish_litebans: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lImport Finished Successfully!
       &8&m+---------------------------------------+
     import_fail: |-
@@ -681,7 +681,7 @@ command:
       &8&l» &7&lImporting From $name Is Not Supported!
       &8&m+---------------------------------------+
     sqlexec_success: |-
-      &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+      &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
       &8&l» &7&lSqlexec Successful!
       &8&m+---------------------------------------+
     sqlexec_failure: |-
@@ -754,10 +754,10 @@ strings:
   'false': 'False'
 notify:
   banned_player_join: |-
-    &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+    &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
     &8&l» &c&l$player Tried To Join But Is Banned!
     &8&m+---------------------------------------+
   banned_geoip_blacklist: |-
-    &8&m+----------------&r&8[&2&lInfo&8]&m----------------+
+    &8&m+----------------&r&8[&2&lInformation&8]&m----------------+
     &8&l» &7&l$player Tried To Join From A Blacklisted IP!
     &8&m+---------------------------------------+
